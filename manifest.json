@@ -1,0 +1,8 @@
+{
+  "name": "Weeks Without My Boy",
+  "short_name": "WeeksWithoutMyBoy",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}
