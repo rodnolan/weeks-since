@@ -1,6 +1,6 @@
 
 // CONFIGURATION: UTC string and target timezone
-const pointInTime = "2025-12-21T22:14:00Z";
+const pointInTime = "2025-12-19T22:14:00Z";
 const timeZone = "America/New_York";
 
 // Converts a Date object into a pure midnight UTC Date representing the local calendar day in the target timezone
@@ -56,6 +56,7 @@ function calculateWeeksAndRender() {
 
     const outputEl = document.getElementById('result');
 
+    console.log(`currentDay: ${currentDay} targetDate: {$targetDate}`);
     if (currentDay === targetDay) {
 
         // Same day of week: exact whole calendar weeks elapsed
