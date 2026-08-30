@@ -56,10 +56,10 @@ h1 {
     font-size: clamp(1.5rem, 5vw, 2.2rem);
 }
 
-.current-local-time {
+/* .current-local-time {
     margin-bottom: 28px;
     opacity: 0.7;
-}
+} */
 
 .result-card {
     margin: 14px 0;
@@ -67,6 +67,19 @@ h1 {
     border: 1px solid color-mix(in srgb, CanvasText 15%, transparent);
     border-radius: 24px;
     background: color-mix(in srgb, CanvasText 4%, Canvas);
+
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;     /* Centers vertically */
+    text-align: center;      /* Centers multi-line text */
+    width: 100%;             /* Responsive width */
+    /* min-height: 100vh;       Full viewport height (adjust as needed) */
+    box-sizing: border-box;
+}
+
+.result-card-child {
+    max-width: 100%;         /* Keeps child responsive */
+    height: auto;
 }
 
 .primary-number {
@@ -75,18 +88,13 @@ h1 {
     line-height: 1;
 }
 
-.primary-label {
-    margin-top: 10px;
-    font-size: 1.15rem;
-}
-
-.comparison {
+.container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 14px;
 }
 
-.comparison .result-card {
+.container .result-card {
     margin: 0;
     padding: 22px 12px;
 }
@@ -102,13 +110,6 @@ h1 {
     text-align: center;
 }
 
-.secondary-date {
-    margin-top: 8px;
-    font-size: 0.9rem;
-    opacity: 0.7;
-    text-align: center;
-}
-
 footer {
     margin-top: 28px;
     font-size: 0.85rem;
@@ -116,7 +117,7 @@ footer {
 }
 
 @media (max-width: 480px) {
-    .comparison {
+    .container {
         grid-template-columns: 1fr;
     }
 }

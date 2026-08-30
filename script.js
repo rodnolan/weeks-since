@@ -1,6 +1,7 @@
 
 // CONFIGURATION: UTC string and target timezone
-const pointInTime = "2025-12-19T22:14:00Z";
+const birthTime = "2001-11-16T13:45:00Z";
+const lastKnownAliveTime = "2025-12-19T22:14:00Z";
 const timeZone = "America/New_York";
 
 // Converts a Date object into a pure midnight UTC Date representing the local calendar day in the target timezone
@@ -39,8 +40,8 @@ function formatInstant(instant) {
     ).format(instant);
 }
 
-function calculateWeeksAndRender() {
-    const targetDate = new Date(pointInTime);
+function render() {
+    const targetDate = new Date(lastKnownAliveTime);
     const now = new Date();
 
     // Strip time-of-day: get pure calendar midnight dates in the target timezone
@@ -62,11 +63,11 @@ function calculateWeeksAndRender() {
         // Same day of week: exact whole calendar weeks elapsed
         const weeksElapsed = Math.floor(elapsedCalendarDays / 7);
         outputEl.innerHTML = `
-                    <div class="result-card">
-                        <div class="primary-number">
-                            ${weeksElapsed}
-                        </div>
-                    </div>`;
+            <div class="result-card">
+                <div class="primary-number">
+                    ${weeksElapsed}
+                </div>
+            </div>`;
 
     } else {
 
@@ -81,24 +82,24 @@ function calculateWeeksAndRender() {
         const nextOccurrenceWeeks = Math.round(nextOccurrenceDays / 7);
 
         outputEl.innerHTML = `
-                    <div class="comparison">
-                        <div class="result-card">
-                            <div class="secondary-number">
-                                ${prevOccurrenceWeeks}
-                            </div>
-                        </div>
-                        <div class="result-card">
-                            <div class="secondary-label">
-                                ${formatInstant(now)}
-                            </div>
-                        </div>
-                        <div class="result-card">
-                            <div class="secondary-number">
-                                ${nextOccurrenceWeeks}
-                            </div>
-                        </div>
-                    </div>`;
+            <div class="container">
+                <div class="result-card">
+                    <div class="result-card-child secondary-number">
+                        ${prevOccurrenceWeeks}
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="result-card-child secondary-label">
+                        ${formatInstant(now)}
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="result-card-child secondary-number">
+                        ${nextOccurrenceWeeks}
+                    </div>
+                </div>
+            </div>`;
     }
 }
 
-calculateWeeksAndRender();
+render();
