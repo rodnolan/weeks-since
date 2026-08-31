@@ -73,7 +73,6 @@ h1 {
     align-items: center;     /* Centers vertically */
     text-align: center;      /* Centers multi-line text */
     width: 100%;             /* Responsive width */
-    /* min-height: 100vh;       Full viewport height (adjust as needed) */
     box-sizing: border-box;
 }
 
@@ -115,6 +114,38 @@ footer {
     font-size: 0.85rem;
     opacity: 0.55;
 }
+
+/* The overlay covers the entire screen, blocks clicks, and looks like a system prompt */
+#refresh-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    /* Dark background */
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    /* Ensures it sits on top of everything */
+    opacity: 0;
+    pointer-events: none;
+    /* Invisible to touches by default */
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* When this class is added via JavaScript, the overlay fades in instantly */
+#refresh-overlay.active-overlay {
+    opacity: 1;
+    pointer-events: auto;
+    /* Blocks all background clicks */
+}
+
 
 @media (max-width: 480px) {
     .container {

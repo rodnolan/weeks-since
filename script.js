@@ -3,6 +3,8 @@
 const birthTime = "2001-11-16T13:45:00Z";
 const lastKnownAliveTime = "2025-12-19T22:14:00Z";
 const timeZone = "America/New_York";
+let tapCount = 0;
+let tapTimeout;
 
 // Converts a Date object into a pure midnight UTC Date representing the local calendar day in the target timezone
 function getTZMidnightUTC(date, tz) {
@@ -57,7 +59,7 @@ function render() {
 
     const outputEl = document.getElementById('result');
 
-    console.log(`currentDay: ${currentDay} targetDate: {$targetDate}`);
+    console.log(`currentDay: ${currentDay} targetDay: ${targetDay} targetDate: ${targetDate}`);
     if (currentDay === targetDay) {
 
         // Same day of week: exact whole calendar weeks elapsed
@@ -103,3 +105,57 @@ function render() {
 }
 
 render();
+
+
+// listen for taps anywhere on the screen
+document.addEventListener('touchend', (event) => {
+  tapCount++;
+
+  // Clear the timer every time a new tap happens
+  clearTimeout(tapTimeout);
+
+  if (tapCount === 3) {
+    // triple tap successfully completed!
+    tapCount = 0; // Reset counter
+    handleHardRefresh();
+  } else {
+    // if the user stops tapping for more than 400ms, reset the counter
+    tapTimeout = setTimeout(() => {
+      tapCount = 0;
+    }, 400); 
+  }
+});
+
+async function handleHardRefresh() {
+  // if device is offline, stop immediately so the app doesn't wipe its cache and crash
+  if (!navigator.onLine) {
+    alert("You are offline. Cache cannot be cleared right now.");
+    return;
+  }
+
+  // show the loading overlay
+  const overlay = document.getElementById('refresh-overlay');
+  if (overlay) {
+    overlay.classList.add('active-overlay');
+  }
+
+  try {
+    // purge the cache; unregister service workers and clear cache storage
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (let registration of registrations) {
+        await registration.unregister();
+      }
+    }
+
+    if ('caches' in window) {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map(name => caches.delete(name)));
+    }
+  } catch (error) {
+    console.error("Error clearing app cache:", error);
+  }
+
+  // force the page to request everything fresh from the server
+  window.location.reload();
+}
