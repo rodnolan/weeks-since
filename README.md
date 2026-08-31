@@ -19,4 +19,13 @@ A dependency-free JavaScript app for GitHub Pages.
 7. Save.
 
 
-GitHub will provide the Pages URL, which you can bookmark on your phone.
+## TODOs
+
+1. Add the dates around the big numbers;
+2. Add the lifetime line that shows the dates and the days and weeks;
+
+
+## updating the version number
+
+There is a pre-commit githook that automates this. All you have to do is include `major:` or `minor:` in the commit message. If these keywords are not present, the commit will be interpreted as a `patch`. The semver version is defined as part of the CACHE_NAME variable in sw.js. The githook increments that number and also displays it in the `<span id="app-version">` tag in `index.html`. These files are modified and staged so that they are included in the commit automatically.
+

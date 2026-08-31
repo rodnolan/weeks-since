@@ -8,100 +8,121 @@ let tapTimeout;
 
 // Converts a Date object into a pure midnight UTC Date representing the local calendar day in the target timezone
 function getTZMidnightUTC(date, tz) {
-    const formatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: tz,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    });
-    const [{ value: m }, , { value: d }, , { value: y }] = formatter.formatToParts(date);
-    return new Date(Date.UTC(parseInt(y), parseInt(m) - 1, parseInt(d)));
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  const [{ value: m }, , { value: d }, , { value: y }] = formatter.formatToParts(date);
+  return new Date(Date.UTC(parseInt(y), parseInt(m) - 1, parseInt(d)));
 }
 
 // Gets the localized day index (0=Sun, 1=Mon, ..., 6=Sat)
 function getTZWeekday(date, tz) {
-    const formatter = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'short' });
-    const dayName = formatter.format(date);
-    return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(dayName);
+  const formatter = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'short' });
+  const dayName = formatter.format(date);
+  return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(dayName);
 }
 
 // Formats an instant using the event's timezone.
 function formatInstant(instant) {
-    return new Intl.DateTimeFormat(
-        undefined,
-        {
-            timeZone: timeZone,
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-            // hour: "numeric",
-            // minute: "2-digit",
-            // timeZoneName: "short"
-        }
-    ).format(instant);
+  return new Intl.DateTimeFormat(
+    undefined,
+    {
+      timeZone: timeZone,
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      // hour: "numeric",
+      // minute: "2-digit",
+      // timeZoneName: "short"
+    }
+  ).format(instant);
+}
+
+function getElapsedDuration(dateStr1, dateStr2) {
+  // Parse the ISO strings into Date objects
+  const d1 = new Date(dateStr1);
+  const d2 = new Date(dateStr2);
+
+  // Calculate the absolute difference in milliseconds
+  const diffInMs = Math.abs(d2 - d1);
+
+  // Convert milliseconds into full days (1 day = 24h * 60m * 60s * 1000ms)
+  const daysElapsed = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+  // Convert days into full weeks
+  const weeksElapsed = Math.floor(daysElapsed / 7);
+
+  return { daysElapsed, weeksElapsed };
 }
 
 function render() {
-    const targetDate = new Date(lastKnownAliveTime);
-    const now = new Date();
+  const targetDate = new Date(lastKnownAliveTime);
+  const now = new Date();
 
-    // Strip time-of-day: get pure calendar midnight dates in the target timezone
-    const targetMidnight = getTZMidnightUTC(targetDate, timeZone);
-    const todayMidnight = getTZMidnightUTC(now, timeZone);
+  // Strip time-of-day: get pure calendar midnight dates in the target timezone
+  const targetMidnight = getTZMidnightUTC(targetDate, timeZone);
+  const todayMidnight = getTZMidnightUTC(now, timeZone);
 
-    // Get day of week (0-6) in the target time zone
-    const targetDay = getTZWeekday(targetDate, timeZone);
-    const currentDay = getTZWeekday(now, timeZone);
+  // Get day of week (0-6) in the target time zone
+  const targetDay = getTZWeekday(targetDate, timeZone);
+  const currentDay = getTZWeekday(now, timeZone);
 
-    // Calculate total elapsed calendar days between midnight boundaries
-    const elapsedCalendarDays = Math.round((todayMidnight - targetMidnight) / (1000 * 60 * 60 * 24));
+  // Calculate total elapsed calendar days between midnight boundaries
+  const elapsedCalendarDays = Math.round((todayMidnight - targetMidnight) / (1000 * 60 * 60 * 24));
 
-    const outputEl = document.getElementById('result');
+  const outputEl = document.getElementById('result');
 
-    console.log(`currentDay: ${currentDay} targetDay: ${targetDay} targetDate: ${targetDate}`);
-    if (currentDay === targetDay) {
+  const daysAndWeeksElapsed = getElapsedDuration(birthTime, lastKnownAliveTime);
 
-        // Same day of week: exact whole calendar weeks elapsed
-        const weeksElapsed = Math.floor(elapsedCalendarDays / 7);
-        outputEl.innerHTML = `
-            <div class="result-card">
-                <div class="primary-number">
-                    ${weeksElapsed}
-                </div>
-            </div>`;
+  console.log(`daysAndWeeksElapsed between ${birthTime} and ${lastKnownAliveTime}: `, daysAndWeeksElapsed);
+  console.log(`currentDay: ${currentDay} targetDay: ${targetDay} targetDate: ${targetDate}`);
+  
+  if (currentDay === targetDay) {
 
-    } else {
+    // today is the same day of the week as the targetDay: exact whole calendar weeks elapsed
+    const weeksElapsed = Math.floor(elapsedCalendarDays / 7);
+    outputEl.innerHTML = `
+      <div class="result-card">
+          <div class="primary-number">
+              ${weeksElapsed}
+          </div>
+      </div>`;
 
-        // Calculate calendar day offsets to previous and next occurrence of the target weekday
-        const daysSinceLast = (currentDay - targetDay + 7) % 7;
-        const daysToNext = (targetDay - currentDay + 7) % 7;
+  } else {
 
-        // Calendar days elapsed as of previous and next occurrence of target weekday
-        const prevOccurrenceDays = elapsedCalendarDays - daysSinceLast;
-        const nextOccurrenceDays = elapsedCalendarDays + daysToNext;
-        const prevOccurrenceWeeks = Math.round(prevOccurrenceDays / 7);
-        const nextOccurrenceWeeks = Math.round(nextOccurrenceDays / 7);
+    // Calculate calendar day offsets to previous and next occurrence of the target weekday
+    const daysSinceLast = (currentDay - targetDay + 7) % 7;
+    const daysToNext = (targetDay - currentDay + 7) % 7;
 
-        outputEl.innerHTML = `
-            <div class="container">
-                <div class="result-card">
-                    <div class="result-card-child secondary-number">
-                        ${prevOccurrenceWeeks}
-                    </div>
-                </div>
-                <div class="result-card">
-                    <div class="result-card-child secondary-label">
-                        ${formatInstant(now)}
-                    </div>
-                </div>
-                <div class="result-card">
-                    <div class="result-card-child secondary-number">
-                        ${nextOccurrenceWeeks}
-                    </div>
-                </div>
-            </div>`;
-    }
+    // Calendar days elapsed as of previous and next occurrence of target weekday
+    const prevOccurrenceDays = elapsedCalendarDays - daysSinceLast;
+    const nextOccurrenceDays = elapsedCalendarDays + daysToNext;
+    const prevOccurrenceWeeks = Math.round(prevOccurrenceDays / 7);
+    const nextOccurrenceWeeks = Math.round(nextOccurrenceDays / 7);
+
+    outputEl.innerHTML = `
+      <div class="container">
+          <div class="result-card">
+              <div class="result-card-child secondary-number">
+                  ${prevOccurrenceWeeks}
+              </div>
+          </div>
+          <div class="result-card">
+              <div class="result-card-child secondary-label">
+                  ${formatInstant(now)}
+              </div>
+          </div>
+          <div class="result-card">
+              <div class="result-card-child secondary-number">
+                  ${nextOccurrenceWeeks}
+              </div>
+          </div>
+      </div>`;
+  }
 }
 
 render();
@@ -122,7 +143,7 @@ document.addEventListener('touchend', (event) => {
     // if the user stops tapping for more than 400ms, reset the counter
     tapTimeout = setTimeout(() => {
       tapCount = 0;
-    }, 400); 
+    }, 400);
   }
 });
 
