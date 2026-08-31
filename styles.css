@@ -113,6 +113,12 @@ footer {
     margin-top: 28px;
     font-size: 0.85rem;
     opacity: 0.55;
+    text-align: center;
+}
+
+footer p.version {
+    text-align: center;
+    font-size: smaller;
 }
 
 /* The overlay covers the entire screen, blocks clicks, and looks like a system prompt */
