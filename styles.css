@@ -105,7 +105,14 @@ h1 {
 }
 
 .secondary-label {
-    margin-top: 4px;
+    font-size: clamp(.5rem, 5vw, 1.5rem);
+    font-weight: 450;
+    text-align: center;
+}
+
+.secondary-label-2 {
+    font-size: clamp(.25rem, 4vw, 1rem);
+    font-weight: 450;
     text-align: center;
 }
 

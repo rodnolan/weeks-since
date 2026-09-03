@@ -59,6 +59,12 @@ function getElapsedDuration(dateStr1, dateStr2) {
   return { daysElapsed, weeksElapsed };
 }
 
+function addDays(date, days) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
 function render() {
   const targetDate = new Date(lastKnownAliveTime);
   const now = new Date();
@@ -80,7 +86,7 @@ function render() {
 
   console.log(`daysAndWeeksElapsed between ${birthTime} and ${lastKnownAliveTime}: `, daysAndWeeksElapsed);
   console.log(`currentDay: ${currentDay} targetDay: ${targetDay} targetDate: ${targetDate}`);
-  
+
   if (currentDay === targetDay) {
 
     // today is the same day of the week as the targetDay: exact whole calendar weeks elapsed
@@ -88,7 +94,11 @@ function render() {
     outputEl.innerHTML = `
       <div class="result-card">
           <div class="primary-number">
-              ${weeksElapsed}
+            <div class="result-card-child secondary-label">
+              ${formatInstant(now)}
+            </div>
+            ${weeksElapsed}
+            <div class="result-card-child secondary-label-2">weeks</div>
           </div>
       </div>`;
 
@@ -99,27 +109,37 @@ function render() {
     const daysToNext = (targetDay - currentDay + 7) % 7;
 
     // Calendar days elapsed as of previous and next occurrence of target weekday
-    const prevOccurrenceDays = elapsedCalendarDays - daysSinceLast;
-    const nextOccurrenceDays = elapsedCalendarDays + daysToNext;
-    const prevOccurrenceWeeks = Math.round(prevOccurrenceDays / 7);
-    const nextOccurrenceWeeks = Math.round(nextOccurrenceDays / 7);
+    const prevFridayDaysElapsed = elapsedCalendarDays - daysSinceLast;
+    const prevFridayWeeksElapsed = Math.round(prevFridayDaysElapsed / 7);
+    const previousFridayDate = addDays(targetDate, prevFridayDaysElapsed);
+    const nextFridayDaysElapsed = elapsedCalendarDays + daysToNext;
+    const nextFridayWeeksElapsed = Math.round(nextFridayDaysElapsed / 7);
+    const nextFridayDate = addDays(targetDate, nextFridayDaysElapsed);
 
     outputEl.innerHTML = `
       <div class="container">
           <div class="result-card">
-              <div class="result-card-child secondary-number">
-                  ${prevOccurrenceWeeks}
+            <div class="result-card-child secondary-number">
+              <div class="result-card-child secondary-label-2">
+                ${formatInstant(previousFridayDate)}
               </div>
+              ${prevFridayWeeksElapsed}
+              <div class="result-card-child secondary-label-2">weeks</div>
+            </div>
           </div>
           <div class="result-card">
-              <div class="result-card-child secondary-label">
-                  ${formatInstant(now)}
-              </div>
+            <div class="result-card-child secondary-label">
+              ${formatInstant(now)}
+            </div>
           </div>
           <div class="result-card">
-              <div class="result-card-child secondary-number">
-                  ${nextOccurrenceWeeks}
-              </div>
+            <div class="result-card-child secondary-number">
+              <div class="result-card-child secondary-label-2">
+                ${formatInstant(nextFridayDate)}
+              </div>  
+              ${nextFridayWeeksElapsed}  
+              <div class="result-card-child secondary-label-2">weeks</div>
+            </div>
           </div>
       </div>`;
   }
