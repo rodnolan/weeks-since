@@ -39,9 +39,9 @@ function formatInstant(instant, tz = timeZone) {
       month: "long",
       day: "numeric",
       year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-      timeZoneName: "short"
+      // hour: "numeric",
+      // minute: "2-digit",
+      // timeZoneName: "short"
     }
   ).format(instant).split(',').join('<br />').split(' at ').join('<br />');
 }
