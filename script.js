@@ -1,7 +1,7 @@
 
 // CONFIGURATION: UTC string and target timezone
-const birthTime = "2001-11-16T13:45:00Z";
-const lastKnownAliveTime = "2025-12-19T22:14:00Z";
+const birthTime = "2001-11-16T18:45:00Z"; // 13:45:00 in Mississauga
+const lastKnownAliveTime = "2025-12-20T03:14:00Z"; // 19T22:14:00 in Brampton
 const timeZone = "America/New_York";
 let tapCount = 0;
 let tapTimeout;
@@ -26,20 +26,24 @@ function getTZWeekday(date, tz) {
 }
 
 // Formats an instant using the event's timezone.
-function formatInstant(instant) {
+function formatInstant(instant, tz = timeZone) {
+
+  // const orientationType = screen.orientation.type;
+  // console.log(orientationType);
+
   return new Intl.DateTimeFormat(
     undefined,
     {
-      timeZone: timeZone,
+      timeZone: tz,
       weekday: "long",
       month: "long",
       day: "numeric",
       year: "numeric",
-      // hour: "numeric",
-      // minute: "2-digit",
-      // timeZoneName: "short"
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short"
     }
-  ).format(instant);
+  ).format(instant).split(',').join('<br />').split(' at ').join('<br />');
 }
 
 function getElapsedDuration(dateStr1, dateStr2) {
@@ -92,15 +96,35 @@ function render() {
     // today is the same day of the week as the targetDay: exact whole calendar weeks elapsed
     const weeksElapsed = Math.floor(elapsedCalendarDays / 7);
     outputEl.innerHTML = `
+    <div class="container">
       <div class="result-card">
-          <div class="primary-number">
-            <div class="result-card-child secondary-label">
-              ${formatInstant(now)}
-            </div>
-            ${weeksElapsed}
-            <div class="result-card-child secondary-label-2">weeks</div>
-          </div>
-      </div>`;
+        <div class="result-card-child secondary-label">
+          ${formatInstant(new Date(birthTime))}
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="primary-number">
+          ${daysAndWeeksElapsed.weeksElapsed}
+          <div class="result-card-child secondary-label-2">weeks</div>
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="result-card-child secondary-label">
+          ${formatInstant(new Date(lastKnownAliveTime))}
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="primary-number">
+          ${weeksElapsed}
+          <div class="result-card-child secondary-label-2">weeks</div>
+        </div>
+      </div>
+      <div class="result-card">  
+        <div class="result-card-child secondary-label">
+          ${formatInstant(now)}
+        </div>
+      </div>
+    </div>`;
 
   } else {
 
