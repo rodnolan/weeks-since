@@ -142,32 +142,53 @@ function render() {
 
     outputEl.innerHTML = `
       <div class="container">
-          <div class="result-card">
-            <div class="result-card-child secondary-number">
-              <div class="result-card-child secondary-label-2">
-                ${formatInstant(previousFridayDate)}
-              </div>
-              ${prevFridayWeeksElapsed}
-              <div class="result-card-child secondary-label-2">weeks</div>
-            </div>
+        <div class="result-card">
+          <div class="result-card-child secondary-label">
+            ${formatInstant(new Date(birthTime))}
           </div>
-          <div class="result-card">
-            <div class="result-card-child secondary-label">
-              ${formatInstant(now)}
-            </div>
+        </div>
+        <div class="result-card">
+          <div class="primary-number">
+            ${daysAndWeeksElapsed.weeksElapsed}
+            <div class="result-card-child secondary-label-2">weeks</div>
           </div>
-          <div class="result-card">
-            <div class="result-card-child secondary-number">
-              <div class="result-card-child secondary-label-2">
-                ${formatInstant(nextFridayDate)}
-              </div>  
-              ${nextFridayWeeksElapsed}  
-              <div class="result-card-child secondary-label-2">weeks</div>
-            </div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-child secondary-label">
+            ${formatInstant(new Date(lastKnownAliveTime))}
           </div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-child secondary-number">
+          <!--
+            <div class="result-card-child secondary-label-2">
+              ${formatInstant(previousFridayDate)}
+            </div>
+            -->
+            ${prevFridayWeeksElapsed}
+            <hr>
+            ${nextFridayWeeksElapsed}  
+            <!--<div class="result-card-child secondary-label-2">weeks</div>-->
+          </div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-child secondary-label">
+            ${formatInstant(now)}
+          </div>
+        </div>
       </div>`;
   }
 }
+
+        // <div class="result-card">
+        //   <div class="result-card-child secondary-number">
+        //     <div class="result-card-child secondary-label-2">
+        //       ${formatInstant(nextFridayDate)}
+        //     </div>  
+        //     ${nextFridayWeeksElapsed}  
+        //     <div class="result-card-child secondary-label-2">weeks</div>
+        //   </div>
+        // </div>
 
 render();
 
