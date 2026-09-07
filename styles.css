@@ -89,7 +89,7 @@ h1 {
 
 .container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 2fr;
     gap: 14px;
 }
 
@@ -163,4 +163,47 @@ footer p.version {
     .container {
         grid-template-columns: 1fr;
     }
+}
+
+
+.container-six-days {
+  position: relative;
+  
+  /* Flexbox settings center the main text block */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Sizing examples (adjust to fit your design) */
+  width: 100%;
+  height: 100%;
+  /* max-width: 320px;
+  height: 200px; */
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Base styles for the pinned corner numbers */
+.top-left, .bottom-right {
+  position: absolute;
+  font-weight: bold;
+  /* font-size: 1.1rem; */
+}
+
+/* Pin to top left */
+.top-left {
+  top: 0px;
+  left: 0px;
+}
+
+/* Pin to bottom right */
+.bottom-right {
+  bottom: 0px;
+  right: 0px;
+}
+
+/* Main text block */
+.centered {
+  text-align: center; /* Centers each individual line of text */
+  line-height: 1.4;
 }

@@ -147,33 +147,27 @@ function render() {
             ${formatInstant(new Date(birthTime))}
           </div>
         </div>
+
         <div class="result-card">
           <div class="primary-number">
             ${daysAndWeeksElapsed.weeksElapsed}
             <div class="result-card-child secondary-label-2">weeks</div>
           </div>
         </div>
+
         <div class="result-card">
           <div class="result-card-child secondary-label">
             ${formatInstant(new Date(lastKnownAliveTime))}
           </div>
         </div>
+
         <div class="result-card">
-          <div class="result-card-child secondary-number">
-          <!--
-            <div class="result-card-child secondary-label-2">
-              ${formatInstant(previousFridayDate)}
+          <div class="container-six-days">
+            <div class="top-left">${prevFridayWeeksElapsed}</div>
+            <div class="result-card-child secondary-label">
+              ${formatInstant(now)}
             </div>
-            -->
-            ${prevFridayWeeksElapsed}
-            <hr>
-            ${nextFridayWeeksElapsed}  
-            <!--<div class="result-card-child secondary-label-2">weeks</div>-->
-          </div>
-        </div>
-        <div class="result-card">
-          <div class="result-card-child secondary-label">
-            ${formatInstant(now)}
+            <div class="bottom-right">${nextFridayWeeksElapsed}</div>
           </div>
         </div>
       </div>`;
@@ -183,6 +177,7 @@ function render() {
         // <div class="result-card">
         //   <div class="result-card-child secondary-number">
         //     <div class="result-card-child secondary-label-2">
+        //       ${formatInstant(prevFridayDate)}
         //       ${formatInstant(nextFridayDate)}
         //     </div>  
         //     ${nextFridayWeeksElapsed}  
