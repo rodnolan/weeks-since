@@ -1,0 +1,72 @@
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+    <!-- iOS Home Screen App Capabilities -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Weeks Without Jeremy">
+  
+    <title>testing</title>
+    <style>
+/* The container must be 'relative' so absolute children stick to its edges */
+.container-six-days {
+  position: relative;
+  
+  /* Flexbox settings center the main text block */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Sizing examples (adjust to fit your design) */
+  width: 100%;
+  max-width: 320px;
+  height: 200px;
+  padding: 16px; /* Prevents corner numbers from touching the hard border */
+  box-sizing: border-box;
+  
+  /* Optional styling */
+  border: 2px solid #333;
+  border-radius: 12px;
+}
+
+/* Base styles for the pinned corner numbers */
+.top-left, .bottom-right {
+  position: absolute;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* Pin to top left */
+.top-left {
+  top: 10px;
+  left: 10px;
+}
+
+/* Pin to bottom right */
+.bottom-right {
+  bottom: 10px;
+  right: 10px;
+}
+
+/* Main text block */
+.centered {
+  text-align: center; /* Centers each individual line of text */
+  line-height: 1.4;
+}
+
+    </style>
+</head>
+
+<body>
+    <div class="container-six-days">
+        <div class="top-left">37</div>
+        <div class="centered">the date<br />over<br />three lines</div>
+        <div class="bottom-right">42</div>
+    </div>
+</body>
+
+</html>
