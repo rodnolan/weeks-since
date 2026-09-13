@@ -46,24 +46,24 @@ body {
     color: CanvasText;
 }
 
-main {
-    width: min(620px, 100%);
-    text-align: center;
-}
-
 h1 {
     margin: 0 0 8px;
     font-size: clamp(1.5rem, 5vw, 2.2rem);
 }
 
-/* .current-local-time {
-    margin-bottom: 28px;
-    opacity: 0.7;
-} */
+.container {
+    display: grid;
+    /* grid-template-columns: 1fr 1fr 1fr 2fr; */
+    gap: 14px;
+}
+
+.five-children {
+    /* grid-template-columns: 1fr 1fr 1fr 1fr 1fr; */
+}
 
 .result-card {
-    margin: 14px 0;
-    padding: 30px 20px;
+    margin: 0;
+    padding: 22px 12px;
     border: 1px solid color-mix(in srgb, CanvasText 15%, transparent);
     border-radius: 24px;
     background: color-mix(in srgb, CanvasText 4%, Canvas);
@@ -77,32 +77,21 @@ h1 {
 }
 
 .result-card-child {
-    max-width: 100%;         /* Keeps child responsive */
+    max-width: 100%;
     height: auto;
 }
 
 .primary-number {
-    font-size: clamp(2.25rem, 10vw, 3rem);
+    font-size: clamp(2rem, 10vw, 2.5rem);
     font-weight: 800;
     line-height: 1;
 }
 
-.container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 2fr;
-    gap: 14px;
-}
-
-.container .result-card {
-    margin: 0;
-    padding: 22px 12px;
-}
-
-.secondary-number {
+/* .secondary-number {
     font-size: clamp(1.25rem, 7vw, 2.25rem);
     font-weight: 750;
     text-align: center;
-}
+} */
 
 .secondary-label {
     font-size: clamp(.5rem, 5vw, 1.25rem);
@@ -158,15 +147,15 @@ footer p.version {
     /* Blocks all background clicks */
 }
 
-
+/* 
 @media (max-width: 480px) {
     .container {
         grid-template-columns: 1fr;
     }
-}
+} */
 
 
-.container-six-days {
+.container-not-friday {
   position: relative;
   
   /* Flexbox settings center the main text block */

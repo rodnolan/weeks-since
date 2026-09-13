@@ -1,10 +1,9 @@
 
 // CONFIGURATION: UTC string and target timezone
-const birthTime = "2001-11-16T18:45:00Z"; // 13:45:00 in Mississauga
-const lastKnownAliveTime = "2025-12-20T03:14:00Z"; // 19T22:14:00 in Brampton
+const birthTime = "2001-11-16T18:45:00Z"; // 2001-11-16T13:45 in Mississauga
+const lastKnownAliveTime = "2025-12-20T03:14:00Z"; // 2025-12-19T22:14 in Brampton
 const timeZone = "America/New_York";
-let tapCount = 0;
-let tapTimeout;
+
 
 // Converts a Date object into a pure midnight UTC Date representing the local calendar day in the target timezone
 function getTZMidnightUTC(date, tz) {
@@ -46,7 +45,8 @@ function formatInstant(instant, tz = timeZone) {
   ).format(instant).split(',').join('<br />').split(' at ').join('<br />');
 }
 
-function getElapsedDuration(dateStr1, dateStr2) {
+// Gets the number of days and weeks elapsed between two ISO date strings, ignoring time-of-day.
+function getElapsedDaysAndWeeks(dateStr1, dateStr2) {
   // Parse the ISO strings into Date objects
   const d1 = new Date(dateStr1);
   const d2 = new Date(dateStr2);
@@ -63,40 +63,18 @@ function getElapsedDuration(dateStr1, dateStr2) {
   return { daysElapsed, weeksElapsed };
 }
 
-function addDays(date, days) {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-}
+// function addDays(date, days) {
+//   const result = new Date(date);
+//   result.setDate(result.getDate() + days);
+//   return result;
+// }
 
-function render() {
-  const targetDate = new Date(lastKnownAliveTime);
-  const now = new Date();
-
-  // Strip time-of-day: get pure calendar midnight dates in the target timezone
-  const targetMidnight = getTZMidnightUTC(targetDate, timeZone);
-  const todayMidnight = getTZMidnightUTC(now, timeZone);
-
-  // Get day of week (0-6) in the target time zone
-  const targetDay = getTZWeekday(targetDate, timeZone);
-  const currentDay = getTZWeekday(now, timeZone);
-
-  // Calculate total elapsed calendar days between midnight boundaries
-  const elapsedCalendarDays = Math.round((todayMidnight - targetMidnight) / (1000 * 60 * 60 * 24));
-
-  const outputEl = document.getElementById('result');
-
-  const daysAndWeeksElapsed = getElapsedDuration(birthTime, lastKnownAliveTime);
-
-  console.log(`daysAndWeeksElapsed between ${birthTime} and ${lastKnownAliveTime}: `, daysAndWeeksElapsed);
-  console.log(`currentDay: ${currentDay} targetDay: ${targetDay} targetDate: ${targetDate}`);
-
-  if (currentDay === targetDay) {
-
-    // today is the same day of the week as the targetDay: exact whole calendar weeks elapsed
-    const weeksElapsed = Math.floor(elapsedCalendarDays / 7);
-    outputEl.innerHTML = `
-    <div class="container">
+function renderFriday(elapsedCalendarDays, daysAndWeeksElapsed, now) {
+  const outputEl = document.getElementById('app');
+  // today is the same day of the week as the targetDay: exact whole calendar weeks elapsed
+  const weeksElapsed = Math.floor(elapsedCalendarDays / 7);
+  outputEl.innerHTML = `
+    <div class="container five-children">
       <div class="result-card">
         <div class="result-card-child secondary-label">
           ${formatInstant(new Date(birthTime))}
@@ -125,22 +103,25 @@ function render() {
         </div>
       </div>
     </div>`;
+}
 
-  } else {
+function renderOtherDays(elapsedCalendarDays, daysAndWeeksElapsed, now, currentDay, targetDay) {
+  const outputEl = document.getElementById('app');
 
-    // Calculate calendar day offsets to previous and next occurrence of the target weekday
-    const daysSinceLast = (currentDay - targetDay + 7) % 7;
-    const daysToNext = (targetDay - currentDay + 7) % 7;
+  // Calculate calendar day offsets to previous and next occurrence of the target weekday
+  const daysSinceLast = (currentDay - targetDay + 7) % 7;
+  const daysToNext = (targetDay - currentDay + 7) % 7;
 
-    // Calendar days elapsed as of previous and next occurrence of target weekday
-    const prevFridayDaysElapsed = elapsedCalendarDays - daysSinceLast;
-    const prevFridayWeeksElapsed = Math.round(prevFridayDaysElapsed / 7);
-    const previousFridayDate = addDays(targetDate, prevFridayDaysElapsed);
-    const nextFridayDaysElapsed = elapsedCalendarDays + daysToNext;
-    const nextFridayWeeksElapsed = Math.round(nextFridayDaysElapsed / 7);
-    const nextFridayDate = addDays(targetDate, nextFridayDaysElapsed);
+  // Calendar days elapsed as of previous and next occurrence of target weekday
+  const prevFridayDaysElapsed = elapsedCalendarDays - daysSinceLast;
+  const prevFridayWeeksElapsed = Math.round(prevFridayDaysElapsed / 7);
+  // const previousFridayDate = addDays(targetDate, prevFridayDaysElapsed);
 
-    outputEl.innerHTML = `
+  const nextFridayDaysElapsed = elapsedCalendarDays + daysToNext;
+  const nextFridayWeeksElapsed = Math.round(nextFridayDaysElapsed / 7);
+  // const nextFridayDate = addDays(targetDate, nextFridayDaysElapsed);
+
+  outputEl.innerHTML = `
       <div class="container">
         <div class="result-card">
           <div class="result-card-child secondary-label">
@@ -162,7 +143,7 @@ function render() {
         </div>
 
         <div class="result-card">
-          <div class="container-six-days">
+          <div class="container-not-friday">
             <div class="top-left">${prevFridayWeeksElapsed}</div>
             <div class="result-card-child secondary-label">
               ${formatInstant(now)}
@@ -171,72 +152,35 @@ function render() {
           </div>
         </div>
       </div>`;
-  }
+
 }
 
-        // <div class="result-card">
-        //   <div class="result-card-child secondary-number">
-        //     <div class="result-card-child secondary-label-2">
-        //       ${formatInstant(prevFridayDate)}
-        //       ${formatInstant(nextFridayDate)}
-        //     </div>  
-        //     ${nextFridayWeeksElapsed}  
-        //     <div class="result-card-child secondary-label-2">weeks</div>
-        //   </div>
-        // </div>
+function render() {
+  const deathDate = new Date(lastKnownAliveTime);
+  const now = new Date();
+
+  // Strip time-of-day: get pure calendar midnight dates in the target timezone
+  const deathDayMidnight = getTZMidnightUTC(deathDate, timeZone);
+  const todayMidnight = getTZMidnightUTC(now, timeZone);
+
+  // Calculate total elapsed calendar days between midnight boundaries
+  // first for birthday to deathday
+  const daysAndWeeksLifetime = getElapsedDaysAndWeeks(birthTime, lastKnownAliveTime);
+  // then for deathday to today
+  const daysSinceDeath = Math.round((todayMidnight - deathDayMidnight) / (1000 * 60 * 60 * 24));
+
+  // Get day of week (0-6) in the target time zone
+  const deathDayIndex = getTZWeekday(deathDate, timeZone);
+  const todayIndex = getTZWeekday(now, timeZone);
+  console.log(`daysAndWeeksLifetime between ${birthTime} and ${lastKnownAliveTime}: `, daysAndWeeksLifetime);
+  console.log(`todayIndex: ${todayIndex}, deathDayIndex: ${deathDayIndex}, deathDate: ${deathDate}`);
+
+  if (todayIndex === deathDayIndex) {
+    renderFriday(daysSinceDeath, daysAndWeeksLifetime, now);
+  } else {
+    renderOtherDays(daysSinceDeath, daysAndWeeksLifetime, now, todayIndex, deathDayIndex);
+  }
+
+}
 
 render();
-
-
-// listen for taps anywhere on the screen
-document.addEventListener('touchend', (event) => {
-  tapCount++;
-
-  // Clear the timer every time a new tap happens
-  clearTimeout(tapTimeout);
-
-  if (tapCount === 3) {
-    // triple tap successfully completed!
-    tapCount = 0; // Reset counter
-    handleHardRefresh();
-  } else {
-    // if the user stops tapping for more than 400ms, reset the counter
-    tapTimeout = setTimeout(() => {
-      tapCount = 0;
-    }, 400);
-  }
-});
-
-async function handleHardRefresh() {
-  // if device is offline, stop immediately so the app doesn't wipe its cache and crash
-  if (!navigator.onLine) {
-    alert("You are offline. Cache cannot be cleared right now.");
-    return;
-  }
-
-  // show the loading overlay
-  const overlay = document.getElementById('refresh-overlay');
-  if (overlay) {
-    overlay.classList.add('active-overlay');
-  }
-
-  try {
-    // purge the cache; unregister service workers and clear cache storage
-    if ('serviceWorker' in navigator) {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      for (let registration of registrations) {
-        await registration.unregister();
-      }
-    }
-
-    if ('caches' in window) {
-      const cacheNames = await caches.keys();
-      await Promise.all(cacheNames.map(name => caches.delete(name)));
-    }
-  } catch (error) {
-    console.error("Error clearing app cache:", error);
-  }
-
-  // force the page to request everything fresh from the server
-  window.location.reload();
-}
