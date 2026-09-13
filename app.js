@@ -69,45 +69,18 @@ function getElapsedDaysAndWeeks(dateStr1, dateStr2) {
 //   return result;
 // }
 
-function renderFriday(elapsedCalendarDays, daysAndWeeksElapsed, now) {
-  const outputEl = document.getElementById('app');
+function renderWholeWeekDay(elapsedCalendarDays, daysAndWeeksElapsed, now) {
   // today is the same day of the week as the targetDay: exact whole calendar weeks elapsed
   const weeksElapsed = Math.floor(elapsedCalendarDays / 7);
-  outputEl.innerHTML = `
-    <div class="container five-children">
-      <div class="result-card">
-        <div class="result-card-child secondary-label">
-          ${formatInstant(new Date(birthTime))}
-        </div>
-      </div>
-      <div class="result-card">
-        <div class="primary-number">
-          ${daysAndWeeksElapsed.weeksElapsed}
-          <div class="result-card-child secondary-label-2">weeks</div>
-        </div>
-      </div>
-      <div class="result-card">
-        <div class="result-card-child secondary-label">
-          ${formatInstant(new Date(lastKnownAliveTime))}
-        </div>
-      </div>
-      <div class="result-card">
-        <div class="primary-number">
-          ${weeksElapsed}
-          <div class="result-card-child secondary-label-2">weeks</div>
-        </div>
-      </div>
-      <div class="result-card">  
-        <div class="result-card-child secondary-label">
-          ${formatInstant(now)}
-        </div>
-      </div>
-    </div>`;
+
+  injectHTMLIntoElements('birth-date', formatInstant(new Date(birthTime)));
+  injectPlainTextIntoElements('life-weeks', daysAndWeeksElapsed.weeksElapsed);
+  injectHTMLIntoElements('death-date', formatInstant(new Date(lastKnownAliveTime)));
+  injectPlainHTMLIntoElements('post-life-weeks', weeksElapsed);
+  injectHTMLIntoElements('today-date', formatInstant(now));
 }
 
-function renderOtherDays(elapsedCalendarDays, daysAndWeeksElapsed, now, currentDay, targetDay) {
-  const outputEl = document.getElementById('app');
-
+function renderPartialWeekDays(elapsedCalendarDays, daysAndWeeksElapsed, now, currentDay, targetDay) {
   // Calculate calendar day offsets to previous and next occurrence of the target weekday
   const daysSinceLast = (currentDay - targetDay + 7) % 7;
   const daysToNext = (targetDay - currentDay + 7) % 7;
@@ -121,38 +94,12 @@ function renderOtherDays(elapsedCalendarDays, daysAndWeeksElapsed, now, currentD
   const nextFridayWeeksElapsed = Math.round(nextFridayDaysElapsed / 7);
   // const nextFridayDate = addDays(targetDate, nextFridayDaysElapsed);
 
-  outputEl.innerHTML = `
-      <div class="container">
-        <div class="result-card">
-          <div class="result-card-child secondary-label">
-            ${formatInstant(new Date(birthTime))}
-          </div>
-        </div>
-
-        <div class="result-card">
-          <div class="primary-number">
-            ${daysAndWeeksElapsed.weeksElapsed}
-            <div class="result-card-child secondary-label-2">weeks</div>
-          </div>
-        </div>
-
-        <div class="result-card">
-          <div class="result-card-child secondary-label">
-            ${formatInstant(new Date(lastKnownAliveTime))}
-          </div>
-        </div>
-
-        <div class="result-card">
-          <div class="container-not-friday">
-            <div class="top-left">${prevFridayWeeksElapsed}</div>
-            <div class="result-card-child secondary-label">
-              ${formatInstant(now)}
-            </div>
-            <div class="bottom-right">${nextFridayWeeksElapsed}</div>
-          </div>
-        </div>
-      </div>`;
-
+  injectHTMLIntoElements('birth-date', formatInstant(new Date(birthTime)));
+  injectPlainTextIntoElements('life-weeks', daysAndWeeksElapsed.weeksElapsed);
+  injectHTMLIntoElements('death-date', formatInstant(new Date(lastKnownAliveTime)));
+  injectPlainTextIntoElements('lastWholeWeeksElapsed', prevFridayWeeksElapsed);
+  injectHTMLIntoElements('today-date', formatInstant(now));
+  injectPlainTextIntoElements('nextWholeWeeksElapsed', nextFridayWeeksElapsed);
 }
 
 function render() {
@@ -168,19 +115,37 @@ function render() {
   const daysAndWeeksLifetime = getElapsedDaysAndWeeks(birthTime, lastKnownAliveTime);
   // then for deathday to today
   const daysSinceDeath = Math.round((todayMidnight - deathDayMidnight) / (1000 * 60 * 60 * 24));
-
+  
   // Get day of week (0-6) in the target time zone
   const deathDayIndex = getTZWeekday(deathDate, timeZone);
   const todayIndex = getTZWeekday(now, timeZone);
-  console.log(`daysAndWeeksLifetime between ${birthTime} and ${lastKnownAliveTime}: `, daysAndWeeksLifetime);
-  console.log(`todayIndex: ${todayIndex}, deathDayIndex: ${deathDayIndex}, deathDate: ${deathDate}`);
+  //console.log(`daysAndWeeksLifetime between ${birthTime} and ${lastKnownAliveTime}: `, daysAndWeeksLifetime);
+  //console.log(`todayIndex: ${todayIndex}, deathDayIndex: ${deathDayIndex}, deathDate: ${deathDate}`);
 
   if (todayIndex === deathDayIndex) {
-    renderFriday(daysSinceDeath, daysAndWeeksLifetime, now);
+    renderWholeWeekDay(daysSinceDeath, daysAndWeeksLifetime, now);
+    toggleLayout('whole');
   } else {
-    renderOtherDays(daysSinceDeath, daysAndWeeksLifetime, now, todayIndex, deathDayIndex);
+    renderPartialWeekDays(daysSinceDeath, daysAndWeeksLifetime, now, todayIndex, deathDayIndex);
+    toggleLayout('partial');
   }
 
 }
 
 render();
+
+function injectPlainTextIntoElements(identifier, value) {
+  const elements = document.querySelectorAll(`[data-id="${identifier}"]`);
+  // console.log(elements);
+  elements?.forEach(element => {
+    element.textContent = value;
+  });
+};
+
+function injectHTMLIntoElements(identifier, value) {
+  const elements = document.querySelectorAll(`[data-id="${identifier}"]`);
+  // console.log(elements);
+  elements?.forEach(element => {
+    element.innerHTML = value;
+  });
+}

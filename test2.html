@@ -349,58 +349,57 @@
         <!-- Partial Week Layout Component -->
         <main class="main-layout partial-week">
             <div class="grid-box">
-                <div id="birth-date">Friday<br />November 16<br />2001</div>
+                <div data-id="birth-date">Friday<br />November 16<br />2001</div>
             </div>
             <div class="grid-box">
                 <div>
-                    <span id="life-weeks" class="number-callout">1257</span>
+                    <span data-id="life-weeks" class="number-callout">1257</span>
                     <span>weeks</span>
                 </div>
             </div>
             <div class="grid-box">
-                <div id="death-date">Friday<br />December 19<br />2025</div>
+                <div data-id="death-date">Friday<br />December 19<br />2025</div>
             </div>
             <div class="grid-box diag-box">
-                <div class="lastWholeWeeksElapsed number-callout">37</div>
-                <div id="today-date">Thursday<br />September 10<br />2026</div>
-                <div class="nextWholeWeeksElapsed number-callout">38</div>
+                <div data-id="lastWholeWeeksElapsed" class="lastWholeWeeksElapsed number-callout">37</div>
+                <div id="today-date" data-id="today-date">Thursday<br />September 10<br />2026</div>
+                <div data-id="nextWholeWeeksElapsed" class="nextWholeWeeksElapsed number-callout">38</div>
             </div>
         </main>
 
         <!-- Whole Week Layout Component -->
         <main class="main-layout whole-week">
             <div class="grid-box">
-                <div id="birth-date">Friday<br />November 16<br />2001</div>
+                <div data-id="birth-date">Friday<br />November 16<br />2001</div>
             </div>
             <div class="grid-box">
                 <div>
-                    <span id="life-weeks" class="number-callout">1257</span>
+                    <span data-id="life-weeks" class="number-callout">1257</span>
                     <span>weeks</span>
                 </div>
             </div>
             <div class="grid-box">
-                <div id="death-date">Friday<br />December 19<br />2025</div>
+                <div data-id="death-date">Friday<br />December 19<br />2025</div>
             </div>
             <div class="grid-box">
                 <div>
-                    <span id="post-life-weeks" class="number-callout">38</span>
+                    <span data-id="post-life-weeks" class="number-callout">38</span>
                     <span>weeks</span>
                 </div>
             </div>
             <div class="grid-box">
-                <div id="today-date">Friday<br />September 11<br />2026</div>
+                <div id="today-date" data-id="today-date">Friday<br />September 11<br />2026</div>
             </div>
         </main>
 
         <footer>
-            <div class="rip">Weeks Without My Boy</div>
-            <div id="version">version</div>
+            <div class="rip">Weeks Without My Boy &mdash; <span id="app-version">v0.3.8</span> &mdash; &copy; 2026 Rod Nolan</div>
         </footer>
     </div>
 
     <script src="layout-toggler.js"></script>
-    <script>toggleLayout();</script>
     <script src="refreshHandler.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>
