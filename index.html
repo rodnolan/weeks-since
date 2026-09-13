@@ -22,22 +22,12 @@
 
   <footer>
     <p>May you rest in peace, Jeremy Fraser Nolan.</p>
-    <p class="version"><span id="app-version">v0.3.4</span></p>
+    <p class="version"><span id="app-version">v0.3.5</span></p>
   </footer>
 
   <script src="script.js"></script>
   <script src="refreshHandler.js"></script>
-
-  <!-- register the service worker script to enable offline capabilities -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('Service Worker registered!', reg))
-          .catch(err => console.log('Registration failed:', err));
-      });
-    }
-  </script>
+  <script src="sw-register.js"></script>
 
   <div id="refresh-overlay" class="hidden-overlay">Updating App...</div>
 
