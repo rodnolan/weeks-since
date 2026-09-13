@@ -13,41 +13,6 @@
     <meta name="theme-color" content="#111827">
     <title>Weeks Without Jeremy</title>
 
-    <script>
-        /**
-         * Layout Visibility Toggle
-         * Toggles your main container between 'whole-week' and 'partial-week' layouts
-         * Alternates visibility between .whole-week and .partial-week containers
-         */
-        function toggleLayout() {
-            const wholeWeekLayout = document.querySelector('.main-layout.whole-week');
-            const partialWeekLayout = document.querySelector('.main-layout.partial-week');
-
-            if (!wholeWeekLayout || !partialWeekLayout) {
-                console.error("❌ Test failed: Missing one or both layout containers in the DOM.");
-                return;
-            }
-
-            // Check which layout is currently hidden and flip them
-            if (wholeWeekLayout.classList.contains('hidden')) {
-                wholeWeekLayout.classList.remove('hidden');
-                partialWeekLayout.classList.add('hidden');
-                console.log("🔄 Displaying: WHOLE WEEK (Partial Week Hidden)");
-            } else {
-                wholeWeekLayout.classList.add('hidden');
-                partialWeekLayout.classList.remove('hidden');
-                console.log("🔄 Displaying: PARTIAL WEEK (Whole Week Hidden)");
-            }
-        }
-
-        // Bind to the 'L' key for browser/emulator testing
-        document.addEventListener('keydown', (event) => {
-            if (event.key.toLowerCase() === 'l') {
-                toggleLayout();
-            }
-        });
-    </script>
-
     <!-- /* Reset & App Setup */ -->
     <style>
         * {
@@ -401,6 +366,7 @@
                 <div class="nextWholeWeeksElapsed number-callout">38</div>
             </div>
         </main>
+
         <!-- Whole Week Layout Component -->
         <main class="main-layout whole-week">
             <div class="grid-box">
@@ -425,78 +391,16 @@
                 <div id="today-date">Friday<br />September 11<br />2026</div>
             </div>
         </main>
+
         <footer>
             <div class="rip">Weeks Without My Boy</div>
             <div id="version">version</div>
         </footer>
     </div>
 
+    <script src="layout-toggler.js"></script>
     <script>toggleLayout();</script>
     <script src="refreshHandler.js"></script>
 </body>
 
 </html>
-
-
-<!--
-
-
-    <style>
-        /* ========================================================
-   PORTRAIT MODE (Vertical Center Stack)
-   ======================================================== */
-@media (orientation: portrait) {
-  .main-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(4, auto); /* 🌟 Each box takes up only what it needs */
-    justify-items: center;      
-    place-content: center;               /* 🌟 CRITICAL: Centers the entire group of 4 boxes vertically */
-    gap: 12px;                           /* Breathing room between the boxes */
-    width: 100%;
-    height: 100%;
-  }
-
-  .partial-week .grid-box {
-    width: max-content;                  /* Collapses width to text content */
-    min-width: 140px;
-    height: auto;                        /* Collapses height to content text lines */
-  }
-
-  /* Remove any forced expansion rules from earlier */
-  .partial-week .grid-box.dynamic-fill {
-    flex: none;
-    grid-row: auto;
-  }
-}
-
-/* ========================================================
-   LANDSCAPE MODE (Horizontal Center Row)
-   ======================================================== */
-@media (orientation: landscape) {
-  .main-layout {
-    display: grid;
-    grid-template-columns: repeat(4, auto); /* 🌟 Each box takes up only what it needs */
-    grid-template-rows: 1fr;
-    align-items: stretch;                   /* Keeps all 4 box heights identical */
-    place-content: center;                  /* 🌟 CRITICAL: Centers the entire row horizontally */
-    gap: 12px;                              /* Breathing room between the boxes */
-    width: 100%;
-    height: 100%;
-  }
-
-  .partial-week .grid-box {
-    width: auto;                            /* Lets grid handle width allocation */
-    height: auto;
-  }
-
-  /* Remove any forced expansion rules from earlier
-  .partial-week .grid-box.dynamic-fill {
-    flex: none;
-    grid-column: auto;
-  }
-     */
-}
-
-    </style>
--->
