@@ -1,0 +1,4 @@
+- integrate code bases so that the current layout problems are fixed
+- investigate whether date modifications can be made using a service worker and tap gentures on today's date
+- split styles and scripts into separate files
+- move javascript from `result.innerHtml=` to populating each pre-defined element
