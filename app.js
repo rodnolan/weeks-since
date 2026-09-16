@@ -71,12 +71,12 @@ function getElapsedDaysAndWeeks(dateStr1, dateStr2) {
 
 function renderWholeWeekDay(elapsedCalendarDays, daysAndWeeksElapsed, now) {
   // today is the same day of the week as the targetDay: exact whole calendar weeks elapsed
-  const weeksElapsed = Math.floor(elapsedCalendarDays / 7);
+  const postLifeWeeksElapsed = Math.floor(elapsedCalendarDays / 7);
 
   injectHTMLIntoElements('birth-date', formatInstant(new Date(birthTime)));
   injectPlainTextIntoElements('life-weeks', daysAndWeeksElapsed.weeksElapsed);
   injectHTMLIntoElements('death-date', formatInstant(new Date(lastKnownAliveTime)));
-  injectPlainHTMLIntoElements('post-life-weeks', weeksElapsed);
+  injectPlainHTMLIntoElements('post-life-weeks', postLifeWeeksElapsed);
   injectHTMLIntoElements('today-date', formatInstant(now));
 }
 
@@ -97,9 +97,9 @@ function renderPartialWeekDays(elapsedCalendarDays, daysAndWeeksElapsed, now, cu
   injectHTMLIntoElements('birth-date', formatInstant(new Date(birthTime)));
   injectPlainTextIntoElements('life-weeks', daysAndWeeksElapsed.weeksElapsed);
   injectHTMLIntoElements('death-date', formatInstant(new Date(lastKnownAliveTime)));
-  injectPlainTextIntoElements('lastWholeWeeksElapsed', prevFridayWeeksElapsed);
+  injectPlainTextIntoElements('last-whole-weeks-elapsed', prevFridayWeeksElapsed);
   injectHTMLIntoElements('today-date', formatInstant(now));
-  injectPlainTextIntoElements('nextWholeWeeksElapsed', nextFridayWeeksElapsed);
+  injectPlainTextIntoElements('next-whole-weeks-elapsed', nextFridayWeeksElapsed);
 }
 
 function render() {
@@ -132,7 +132,6 @@ function render() {
 
 }
 
-render();
 
 function injectPlainTextIntoElements(identifier, value) {
   const elements = document.querySelectorAll(`[data-id="${identifier}"]`);
@@ -149,3 +148,8 @@ function injectHTMLIntoElements(identifier, value) {
     element.innerHTML = value;
   });
 }
+
+
+window.addEventListener('load', () => {
+  render();
+});

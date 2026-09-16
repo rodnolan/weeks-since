@@ -1,0 +1,56 @@
+/* Apply a clean, fast-rendering system font stack used by iOS natively */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    /* Apple's standard dark gray body text color */
+    color: #1c1c1e;
+    /* Makes fonts look sharper on Retina displays */
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.4;
+}
+
+/* Fluid Header: Scales smoothly between 22px and 32px */
+h1 {
+    font-size: clamp(1.375rem, 5vw, 2rem);
+    font-weight: 700;
+    /* Slightly tighter tracking looks better on mobile */
+    letter-spacing: -0.5px;
+    color: #000000;
+    text-align: center;
+    padding: 16px 0 8px 0;
+}
+
+/* Grid Boxes Content Styling */
+.grid-box {
+    /* Fluid Content Text: Scales smoothly between 14px and 18px */
+    font-size: clamp(0.875rem, 3vw, 1.125rem);
+    /* Medium weight provides high legibility inside containers */
+    font-weight: 500;
+    color: #2c2c2e;
+    /* Line height padding prevents text lines from crashing into each other */
+    line-height: 1.35;
+    padding: 12px;
+}
+
+/* If a box has a number inside, make it pop */
+.grid-box strong,
+.grid-box .number-callout {
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    font-weight: 700;
+    /* Apple's standard system blue color accent */
+    color: #007aff;
+    /* Pushes the number onto its own line */
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Fluid Footer: Scales cleanly between 11px and 13px */
+footer {
+    font-size: clamp(0.6875rem, 2.5vw, 0.8125rem);
+    font-weight: 400;
+    /* Secondary gray color for minor metadata labels */
+    color: #8e8e93;
+    text-align: center;
+    letter-spacing: 0.2px;
+    /* Extra bottom padding accounts for the iPhone home indicator bar */
+    padding: 12px 0 24px 0;
+}

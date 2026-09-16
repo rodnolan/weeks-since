@@ -1,0 +1,143 @@
+/* Reset & App Setup */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.app-container {
+    display: grid;
+    grid-template-rows: auto 1fr auto; /* Header (auto), Main Layout (1fr), Footer (auto) */
+    height: 100vh;
+
+    /* Protects the header from getting cut off by the iPhone notch
+    padding-top: env(safe-area-inset-top, 20px);
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+    padding-right: 12px; 
+    padding-left: 12px;
+    */
+}
+
+h1,
+footer {
+    text-align: center;
+    width: 100%;
+}
+
+h1 {
+    padding: 8px 0;
+}
+
+footer {
+    padding: 8px 0;
+}
+
+
+.grid-box {
+    border: 2px solid #333;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.diag-box {
+    display: grid;
+}
+
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ========================================================
+   PORTRAIT MODE (Vertical Screen)
+   ======================================================== */
+@media (orientation: portrait) {
+    .app-container {
+        /* Protects the header from getting cut off by the iPhone notch */
+        padding-top: env(safe-area-inset-top, 20px);
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .main-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        align-content: center;
+        gap: 12px;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Layout 1: 5 equal height rows */
+    .whole-week {
+        grid-template-rows: repeat(5, auto);
+        /* Switched to auto to allow natural text scaling */
+    }
+
+    .whole-week .grid-box {
+        width: max-content;
+        min-width: 140px;
+        height: auto;
+    }
+
+    /* Layout 2: 4 rows, last row is 2x high */
+    .partial-week {
+        grid-template-rows: auto auto auto auto;
+    }
+
+    .partial-week .grid-box {
+        width: max-content;
+        min-width: 140px;
+        height: auto;
+    }
+}
+
+/* ========================================================
+   LANDSCAPE MODE (Horizontal Screen)
+   ======================================================== */
+@media (orientation: landscape) {
+    .app-container {
+        /* 🌟 THE FIX: Protect sides from the notch, use small uniform 12px top/bottom */
+        padding-top: 12px;
+        padding-bottom: env(safe-area-inset-bottom, 12px);
+        padding-left: env(safe-area-inset-left, 16px);
+        padding-right: env(safe-area-inset-right, 16px);
+    }
+
+    .main-layout {
+        display: grid;
+        align-items: stretch;
+        /* Keeps all box heights on the row identical */
+
+        /* 🌟 FIX 1: Centers the horizontal row of boxes vertically in the screen space */
+        align-content: center;
+
+        gap: 12px;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Layout 1: 5 equal-width columns */
+    .whole-week {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    /* Layout 2: 3 uniform columns + 1 filling column */
+    .partial-week {
+        grid-template-columns: repeat(3, 18%) 1fr;
+    }
+}

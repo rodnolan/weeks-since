@@ -1,0 +1,181 @@
+/* Reset & App Setup */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 12px;
+
+    min-width: 350px;
+    min-height: 500px;
+}
+
+h1,
+footer {
+    flex: 0 0 auto;
+    text-align: center;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 8px;
+}
+
+.main-layout {
+    flex: 1 1 auto;
+    display: flex;
+    gap: 8px;
+    min-height: 0;
+    /* Critical fix for inner content overflow */
+    min-width: 0;
+    /* background-color: lightblue; */
+    padding: 1rem;
+    margin: 1rem;
+}
+
+.grid-box {
+
+    border: 2px solid #333;
+    border-radius: 8px;
+
+    /* Centering Core */
+    display: flex;
+    justify-content: center;
+    /* Aligns horizontally */
+    align-items: center;
+    /* Aligns vertically */
+    text-align: center;
+    /* Keeps broken/multi-line text aligned centrally */
+
+    padding: 12px;
+    /* Inner padding safety fallback */
+    box-sizing: border-box;
+}
+
+.diag-box {
+    display: grid;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* The overlay covers the entire screen, blocks clicks, and looks like a system prompt */
+#refresh-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    /* Dark background */
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    /* Ensures it sits on top of everything */
+    opacity: 0;
+    pointer-events: none;
+    /* Invisible to touches by default */
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* When this class is added via JavaScript, the overlay fades in instantly */
+#refresh-overlay.active-overlay {
+    opacity: 1;
+    pointer-events: auto;
+    /* Blocks all background clicks */
+}
+
+
+/* PORTRAIT MODE (Vertical Screen) */
+@media (orientation: portrait) {
+    .main-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        /* A single vertical column track */
+        justify-items: center;
+        /* center boxes horizontally AND collapse track width */
+        align-content: space-between;
+        /* stretch the vertical tracks to use the screen height */
+        gap: 8px;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Layout 1: Whole Week (5 equal height rows) */
+    .whole-week {
+        /* 5 tracks, each taking an exact equal fraction of the height */
+        grid-template-rows: repeat(5, 1fr);
+    }
+
+    .whole-week .grid-box {
+        width: max-content;
+        /* 🌟 Collapses each box width tightly to its longest text string */
+        min-width: 140px;
+        /* Optional safety net: prevents boxes from getting too skin-tight */
+    }
+
+    /* Layout 2: Partial Week (4 rows, last row is 2x high) */
+    .partial-week {
+        /* Splits height into 5 total shares (1 + 1 + 1 + 2) */
+        grid-template-rows: 1fr 1fr 1fr 2fr;
+    }
+
+    .partial-week .grid-box {
+        width: max-content;
+        /* Collapses width to text content */
+        min-width: 140px;
+    }
+}
+
+
+/* LANDSCAPE MODE (Horizontal Screen */
+@media (orientation: landscape) {
+    .main-layout {
+        display: grid;
+        align-content: center;
+        /* centers the entire grid row vertically in the screen space */
+        align-items: stretch;
+        /* forces every single grid item to match the tallest track height */
+        gap: 8px;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Layout 1: 5 equal-width columns */
+    .whole-week {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .whole-week .grid-box {
+        /* No manual widths or heights needed; Grid manages layout bounds natively */
+    }
+
+    /* Layout 2: 3 fixed columns (e.g., 18% width) + 1 column taking the rest */
+    .partial-week {
+        grid-template-columns: repeat(3, 18%) 1fr;
+    }
+
+    .partial-week .grid-box {
+        /* No manual widths or heights needed; Grid manages layout bounds natively */
+    }
+}

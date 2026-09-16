@@ -1,0 +1,61 @@
+.diag-box {
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 16px;
+    box-sizing: border-box;
+
+    /* Force a 3x3 grid matrix */
+    display: grid;
+    /* Left wing, Center, Right wing */
+    grid-template-columns: 1fr auto 1fr;
+    /* Top row, Center, Bottom row */
+    grid-template-rows: auto 1fr auto;
+
+    /* Force the box to fill its allocated space in the parent container */
+    width: 100%;
+    height: 100%;
+}
+
+/* Row 1, Column 1: Top Left Corner */
+.lastWholeWeeksElapsed {
+    grid-row: 1;
+    grid-column: 1;
+    justify-self: start;
+    align-self: start;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Row 2, Column 2: Center */
+#today-date {
+    grid-row: 2;
+    grid-column: 2;
+    justify-self: center;
+    align-self: center;
+    text-align: center;
+}
+
+/* Row 3, Column 3: Bottom Right Corner */
+.nextWholeWeeksElapsed {
+    grid-row: 3;
+    grid-column: 3;
+    justify-self: end;
+    align-self: end;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* ORIENTATION ADJUSTMENTS */
+@media (orientation: portrait) {
+    .diag-box {
+        /* Give vertical breathing room between rows in portrait */
+        grid-template-rows: min-content 1fr min-content;
+    }
+}
+
+@media (orientation: landscape) {
+    .diag-box {
+        /* Give horizontal breathing room between columns in landscape */
+        grid-template-columns: min-content 1fr min-content;
+    }
+}

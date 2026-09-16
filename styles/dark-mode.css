@@ -1,0 +1,45 @@
+@media (prefers-color-scheme: dark) {
+
+    /* Swap the foundational screen environment colors */
+    body, 
+    .app-container {
+        /* Deep black canvas */
+        background-color: #000000;
+        /* Off-white readable text */
+        color: #f2f2f7;
+    }
+
+    /* Header adjustments */
+    h1 {
+        color: #ffffff;
+    }
+
+    /* Box container color flips */
+    .grid-box {
+        /* Apple's standard system background grey */
+        background: #1c1c1e;
+        /* Subtle dark separator borders */
+        border-color: #3a3a3c;
+        /* Secondary light text */
+        color: #e5e5ea;
+    }
+
+    /* Accent callout updates */
+    .grid-box strong,
+    .grid-box .number-callout {
+        /* Brighter neon blue optimized for contrast on dark screens */
+        color: #0a84ff;
+    }
+
+    /* Footer meta text */
+    footer {
+        /* Slightly darker grey text for background legibility */
+        color: #636366;
+    }
+
+    /* Update overlay adjustment (from earlier) */
+    #refresh-overlay {
+        background-color: rgba(20, 20, 22, 0.95);
+        color: #ffffff;
+    }
+}

@@ -1,407 +1,87 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-    <!-- iOS Home Screen App Capabilities -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Weeks Without Jeremy">
+  <!-- iOS Home Screen App Capabilities -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Weeks Without Jeremy">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="theme-color" content="#111827">
 
-    <!-- iOS App Icon (Replace icon.png with your icon file path) -->
-    <link rel="apple-touch-icon" href="icon.png"> 
-    <meta name="theme-color" content="#111827">
-    <title>Weeks Without Jeremy</title>
+  <title>Weeks Without Jeremy</title>
 
-    <!-- /* Reset & App Setup */ -->
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html,
-        body {
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            padding: 12px;
-
-            min-width: 350px;
-            min-height: 500px;
-        }
-
-        h1,
-        footer {
-            flex: 0 0 auto;
-            text-align: center;
-        }
-
-        .main-layout {
-            flex: 1 1 auto;
-            display: flex;
-            gap: 8px;
-            min-height: 0;
-            /* Critical fix for inner content overflow */
-            min-width: 0;
-            /* background-color: lightblue; */
-            padding: 1rem;
-            margin: 1rem;
-        }
-
-        .grid-box {
-
-            border: 2px solid #333;
-            border-radius: 8px;
-
-            /* Centering Core */
-            display: flex;
-            justify-content: center;
-            /* Aligns horizontally */
-            align-items: center;
-            /* Aligns vertically */
-            text-align: center;
-            /* Keeps broken/multi-line text aligned centrally */
-
-            padding: 12px;
-            /* Inner padding safety fallback */
-            box-sizing: border-box;
-        }
-
-        .diag-box {
-            display: grid;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* ========================================================
-        PORTRAIT MODE (Vertical Screen)
-        ======================================================== */
-        @media (orientation: portrait) {
-            .main-layout {
-                display: grid;
-                grid-template-columns: 1fr;
-                /* A single vertical column track */
-                justify-items: center;
-                /* 🌟 THE FIX: Centers boxes horizontally AND collapses track width */
-                align-content: space-between;
-                /* Stretches the vertical tracks to use the screen height */
-                gap: 8px;
-                width: 100%;
-                height: 100%;
-            }
-
-            /* --------------------------------------------------------
-            Layout 1: Whole Week (5 equal height rows)
-            -------------------------------------------------------- */
-            .whole-week {
-                /* 5 tracks, each taking an exact equal fraction of the height */
-                grid-template-rows: repeat(5, 1fr);
-            }
-
-            .whole-week .grid-box {
-                width: max-content;
-                /* 🌟 Collapses each box width tightly to its longest text string */
-                min-width: 140px;
-                /* Optional safety net: prevents boxes from getting too skin-tight */
-            }
-
-            /* --------------------------------------------------------
-            Layout 2: Partial Week (4 rows, last row is 2x high)
-            -------------------------------------------------------- */
-            .partial-week {
-                /* Splits height into 5 total shares (1 + 1 + 1 + 2) */
-                grid-template-rows: 1fr 1fr 1fr 2fr;
-            }
-
-            .partial-week .grid-box {
-                width: max-content;
-                /* Collapses width to text content */
-                min-width: 140px;
-            }
-        }
-
-
-        /* ========================================================
-        LANDSCAPE MODE (Horizontal Screen)
-        ======================================================== */
-        @media (orientation: landscape) {
-            .main-layout {
-                display: grid;
-                /* 🌟 THE FIX: Switch from flex to grid */
-                align-content: center;
-                /* Centers the entire grid row vertically in the screen space */
-                align-items: stretch;
-                /* 🌟 Forces every single grid item to match the tallest track height */
-                gap: 8px;
-                width: 100%;
-                height: 100%;
-            }
-
-            /* Layout 1: 5 equal-width columns */
-            .whole-week {
-                grid-template-columns: repeat(5, 1fr);
-            }
-
-            .whole-week .grid-box {
-                /* No manual widths or heights needed; Grid manages layout bounds natively */
-            }
-
-            /* Layout 2: 3 fixed columns (e.g., 18% width) + 1 column taking the rest */
-            .partial-week {
-                grid-template-columns: repeat(3, 18%) 1fr;
-            }
-
-            .partial-week .grid-box {
-                /* No manual widths or heights needed; Grid manages layout bounds natively */
-            }
-        }
-    </style>
-
-    <!-- /* APP-WIDE TYPOGRAPHY */ -->
-    <style>
-        /* Apply a clean, fast-rendering system font stack used by iOS natively */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            /* Apple's standard dark gray body text color */
-            color: #1c1c1e;
-            /* Makes fonts look sharper on Retina displays */
-            -webkit-font-smoothing: antialiased;
-            line-height: 1.4;
-        }
-
-        /* Fluid Header: Scales smoothly between 22px and 32px */
-        h1 {
-            font-size: clamp(1.375rem, 5vw, 2rem);
-            font-weight: 700;
-            /* Slightly tighter tracking looks better on mobile */
-            letter-spacing: -0.5px;
-            color: #000000;
-            text-align: center;
-            padding: 16px 0 8px 0;
-        }
-
-        /* Grid Boxes Content Styling */
-        .grid-box {
-            /* Fluid Content Text: Scales smoothly between 14px and 18px */
-            font-size: clamp(0.875rem, 3vw, 1.125rem);
-            /* Medium weight provides high legibility inside containers */
-            font-weight: 500;
-            color: #2c2c2e;
-            /* Line height padding prevents text lines from crashing into each other */
-            line-height: 1.35;
-            padding: 12px;
-        }
-
-        /* If a box has a number inside, make it pop */
-        .grid-box strong,
-        .grid-box .number-callout {
-            font-size: clamp(1.25rem, 4vw, 1.75rem);
-            font-weight: 700;
-            /* Apple's standard system blue color accent */
-            color: #007aff;
-            /* Pushes the number onto its own line */
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        /* Fluid Footer: Scales cleanly between 11px and 13px */
-        footer {
-            font-size: clamp(0.6875rem, 2.5vw, 0.8125rem);
-            font-weight: 400;
-            /* Secondary gray color for minor metadata labels */
-            color: #8e8e93;
-            text-align: center;
-            letter-spacing: 0.2px;
-            /* Extra bottom padding accounts for the iPhone home indicator bar */
-            padding: 12px 0 24px 0;
-        }
-    </style>
-
-    <!-- /* AUTOMATIC DARK MODE (SYSTEM DETECTION) */ -->
-    <style>
-        @media (prefers-color-scheme: dark) {
-
-            /* Swap the foundational screen environment colors */
-            body {
-                /* Deep black canvas */
-                background-color: #000000;
-                /* Off-white readable text */
-                color: #f2f2f7;
-            }
-
-            /* Header adjustments */
-            h1 {
-                color: #ffffff;
-            }
-
-            /* Box container color flips */
-            .grid-box {
-                /* Apple's standard system background grey */
-                background: #1c1c1e;
-                /* Subtle dark separator borders */
-                border-color: #3a3a3c;
-                /* Secondary light text */
-                color: #e5e5ea;
-            }
-
-            /* Accent callout updates */
-            .grid-box strong,
-            .grid-box .number-callout {
-                /* Brighter neon blue optimized for contrast on dark screens */
-                color: #0a84ff;
-            }
-
-            /* Footer meta text */
-            footer {
-                /* Slightly darker grey text for background legibility */
-                color: #636366;
-            }
-
-            /* Update overlay adjustment (from earlier) */
-            #refresh-overlay {
-                background-color: rgba(20, 20, 22, 0.95);
-                color: #ffffff;
-            }
-        }
-    </style>
-
-    <!-- /* 3x3 MATRIX SETUP */ -->
-    <style>
-        .diag-box {
-
-            border: 2px solid #333;
-            border-radius: 8px;
-            padding: 16px;
-            box-sizing: border-box;
-
-            /* Force a 3x3 grid matrix */
-            display: grid;
-            /* Left wing, Center, Right wing */
-            grid-template-columns: 1fr auto 1fr;
-            /* Top row, Center, Bottom row */
-            grid-template-rows: auto 1fr auto;
-
-            /* Force the box to fill its allocated space in the parent container */
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Row 1, Column 1: Top Left Corner */
-        .lastWholeWeeksElapsed {
-            grid-row: 1;
-            grid-column: 1;
-            justify-self: start;
-            align-self: start;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        /* Row 2, Column 2: Center */
-        #today-date {
-            grid-row: 2;
-            grid-column: 2;
-            justify-self: center;
-            align-self: center;
-            text-align: center;
-        }
-
-        /* Row 3, Column 3: Bottom Right Corner */
-        .nextWholeWeeksElapsed {
-            grid-row: 3;
-            grid-column: 3;
-            justify-self: end;
-            align-self: end;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        /* ORIENTATION ADJUSTMENTS */
-        @media (orientation: portrait) {
-            .diag-box {
-                /* Give vertical breathing room between rows in portrait */
-                grid-template-rows: min-content 1fr min-content;
-            }
-        }
-
-        @media (orientation: landscape) {
-            .diag-box {
-                /* Give horizontal breathing room between columns in landscape */
-                grid-template-columns: min-content 1fr min-content;
-            }
-        }
-    </style>
-
+  <link rel="stylesheet" href="styles/layout2.css">
+  <link rel="stylesheet" href="styles/typography.css">
+  <link rel="stylesheet" href="styles/dark-mode.css">
+  <link rel="stylesheet" href="styles/3x3-today-box-layout.css">
 </head>
 
 <body>
-    <div class="app-container">
-        <h1>may you rest in peace<br />Jeremy Fraser Nolan</h1>
 
-        <!-- Partial Week Layout Component -->
-        <main class="main-layout partial-week">
-            <div class="grid-box">
-                <div data-id="birth-date">Friday<br />November 16<br />2001</div>
-            </div>
-            <div class="grid-box">
-                <div>
-                    <span data-id="life-weeks" class="number-callout">1257</span>
-                    <span>weeks</span>
-                </div>
-            </div>
-            <div class="grid-box">
-                <div data-id="death-date">Friday<br />December 19<br />2025</div>
-            </div>
-            <div class="grid-box diag-box">
-                <div data-id="lastWholeWeeksElapsed" class="lastWholeWeeksElapsed number-callout">37</div>
-                <div id="today-date" data-id="today-date">Thursday<br />September 10<br />2026</div>
-                <div data-id="nextWholeWeeksElapsed" class="nextWholeWeeksElapsed number-callout">38</div>
-            </div>
-        </main>
+  <section class="app-container">
 
-        <!-- Whole Week Layout Component -->
-        <main class="main-layout whole-week">
-            <div class="grid-box">
-                <div data-id="birth-date">Friday<br />November 16<br />2001</div>
-            </div>
-            <div class="grid-box">
-                <div>
-                    <span data-id="life-weeks" class="number-callout">1257</span>
-                    <span>weeks</span>
-                </div>
-            </div>
-            <div class="grid-box">
-                <div data-id="death-date">Friday<br />December 19<br />2025</div>
-            </div>
-            <div class="grid-box">
-                <div>
-                    <span data-id="post-life-weeks" class="number-callout">38</span>
-                    <span>weeks</span>
-                </div>
-            </div>
-            <div class="grid-box">
-                <div id="today-date" data-id="today-date">Friday<br />September 11<br />2026</div>
-            </div>
-        </main>
+    <h1>Weeks Without My Boy</h1>
 
-        <footer>
-            <div class="rip">Weeks Without My Boy &mdash; <span id="app-version">v0.3.8</span> &mdash; &copy; 2026 Rod Nolan</div>
-        </footer>
-    </div>
+    <main class="main-layout whole-week">
+      <div class="grid-box">
+        <div data-id="birth-date"><!--Friday<br />November 16<br />2001 --></div>
+      </div>
+      <div class="grid-box">
+        <div>
+          <span data-id="life-weeks" class="number-callout"><!--1257--></span>
+          <span>weeks</span>
+        </div>
+      </div>
+      <div class="grid-box">
+        <div data-id="death-date"><!--Friday<br />December 19<br />2025--></div>
+      </div>
+      <div class="grid-box">
+        <div>
+          <span data-id="post-life-weeks" class="number-callout"><!--38--></span>
+          <span>weeks</span>
+        </div>
+      </div>
+      <div class="grid-box">
+        <div id="today-date" data-id="today-date"><!--Friday<br />September 11<br />2026--></div>
+      </div>
+    </main>
 
-    <script src="layout-toggler.js"></script>
-    <script src="refreshHandler.js"></script>
-    <script src="app.js"></script>
+    <main class="main-layout partial-week">
+      <div class="grid-box">
+        <div data-id="birth-date"><!--Friday<br />November 16<br />2001 --></div>
+      </div>
+      <div class="grid-box">
+        <div>
+          <span data-id="life-weeks" class="number-callout"><!--1257--></span>
+          <span>weeks</span>
+        </div>
+      </div>
+      <div class="grid-box">
+        <div data-id="death-date"><!--Friday<br />December 19<br />2025--></div>
+      </div>
+      <div class="grid-box diag-box">
+        <div data-id="last-whole-weeks-elapsed" class="lastWholeWeeksElapsed number-callout"><!--37--></div>
+        <div id="today-date" data-id="today-date"><!--Thursday<br />September 10<br />2026--></div>
+        <div data-id="next-whole-weeks-elapsed" class="nextWholeWeeksElapsed number-callout"><!--38--></div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="rip">Weeks Without My Boy &mdash; <span id="app-version">v1.0.0</span> &mdash; &copy; 2026 Rod Nolan</div>
+    </footer>
+
+  </section>
+
+  <script src="scripts/refreshHandler.js"></script>
+  <script src="scripts/layout-toggler.js"></script>
+  <script src="scripts/sw-register.js"></script>
+  <script src="app.js"></script>
+  <div id="refresh-overlay" class="hidden-overlay">Updating App...</div>
 </body>
 
 </html>

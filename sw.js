@@ -1,8 +1,15 @@
-const CACHE_NAME = 'app-cache-v0.4.0'; // The script will automatically edit this string
+const CACHE_NAME = 'app-cache-v1.0.0'; // The script will automatically edit this string
 const urlsToCache = [
   'index.html',
-  'style.css',
-  'script.js'
+  'styles/layout.css',
+  'styles/layout2.css',
+  'styles/typography.css',
+  'styles/dark-mode.css',
+  'styles/3x3-today-box-layout.css',
+  'app.js',
+  'scripts/layout-toggler.js',
+  'scripts/refreshHandler.js',
+  'scripts/sw-register.js'
 ];
 
 // Install the Service Worker and cache the files
