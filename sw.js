@@ -1,4 +1,4 @@
-const CACHE_NAME = 'app-cache-v1.0.0'; // The script will automatically edit this string
+const CACHE_NAME = 'app-cache-v2.0.0'; // The script will automatically edit this string
 const urlsToCache = [
   'index.html',
   'styles/layout.css',

@@ -26,10 +26,6 @@ function getTZWeekday(date, tz) {
 
 // Formats an instant using the event's timezone.
 function formatInstant(instant, tz = timeZone) {
-
-  // const orientationType = screen.orientation.type;
-  // console.log(orientationType);
-
   return new Intl.DateTimeFormat(
     undefined,
     {
@@ -45,7 +41,7 @@ function formatInstant(instant, tz = timeZone) {
   ).format(instant).split(',').join('<br />').split(' at ').join('<br />');
 }
 
-// Gets the number of days and weeks elapsed between two ISO date strings, ignoring time-of-day.
+// Gets the number of days and the number of weeks elapsed between two ISO date strings, ignoring time-of-day.
 function getElapsedDaysAndWeeks(dateStr1, dateStr2) {
   // Parse the ISO strings into Date objects
   const d1 = new Date(dateStr1);
@@ -63,24 +59,23 @@ function getElapsedDaysAndWeeks(dateStr1, dateStr2) {
   return { daysElapsed, weeksElapsed };
 }
 
-// function addDays(date, days) {
-//   const result = new Date(date);
-//   result.setDate(result.getDate() + days);
-//   return result;
-// }
-
-function renderWholeWeekDay(elapsedCalendarDays, daysAndWeeksElapsed, now) {
-  // today is the same day of the week as the targetDay: exact whole calendar weeks elapsed
-  const postLifeWeeksElapsed = Math.floor(elapsedCalendarDays / 7);
-
-  injectHTMLIntoElements('birth-date', formatInstant(new Date(birthTime)));
-  injectPlainTextIntoElements('life-weeks', daysAndWeeksElapsed.weeksElapsed);
-  injectHTMLIntoElements('death-date', formatInstant(new Date(lastKnownAliveTime)));
-  injectPlainHTMLIntoElements('post-life-weeks', postLifeWeeksElapsed);
-  injectHTMLIntoElements('today-date', formatInstant(now));
+// populates the elements that are common to both layouts (whole week and partial week)
+function populateCommonElements(daysAndWeeksElapsed, now) {
+  injectContentIntoElements('birth-date', 'innerHTML', formatInstant(new Date(birthTime)));
+  injectContentIntoElements('life-weeks', 'textContent', daysAndWeeksElapsed.weeksElapsed);
+  injectContentIntoElements('death-date', 'innerHTML', formatInstant(new Date(lastKnownAliveTime)));
+  injectContentIntoElements('today-date', 'innerHTML', formatInstant(now));
 }
 
-function renderPartialWeekDays(elapsedCalendarDays, daysAndWeeksElapsed, now, currentDay, targetDay) {
+// populates the elements that are unique to the whole week layout
+function populateWholeWeekDayElements(elapsedCalendarDays) {
+  // today is the same day of the week as the targetDay: exact whole calendar weeks elapsed
+  const postLifeWeeksElapsed = Math.floor(elapsedCalendarDays / 7);
+  injectContentIntoElements('post-life-weeks', 'innerHTML', postLifeWeeksElapsed);
+}
+
+// populates the elements that are unique to the partial week layout
+function populatePartialWeekDayElements(elapsedCalendarDays, currentDay, targetDay) {  
   // Calculate calendar day offsets to previous and next occurrence of the target weekday
   const daysSinceLast = (currentDay - targetDay + 7) % 7;
   const daysToNext = (targetDay - currentDay + 7) % 7;
@@ -93,14 +88,16 @@ function renderPartialWeekDays(elapsedCalendarDays, daysAndWeeksElapsed, now, cu
   const nextFridayDaysElapsed = elapsedCalendarDays + daysToNext;
   const nextFridayWeeksElapsed = Math.round(nextFridayDaysElapsed / 7);
   // const nextFridayDate = addDays(targetDate, nextFridayDaysElapsed);
-
-  injectHTMLIntoElements('birth-date', formatInstant(new Date(birthTime)));
-  injectPlainTextIntoElements('life-weeks', daysAndWeeksElapsed.weeksElapsed);
-  injectHTMLIntoElements('death-date', formatInstant(new Date(lastKnownAliveTime)));
-  injectPlainTextIntoElements('last-whole-weeks-elapsed', prevFridayWeeksElapsed);
-  injectHTMLIntoElements('today-date', formatInstant(now));
-  injectPlainTextIntoElements('next-whole-weeks-elapsed', nextFridayWeeksElapsed);
+  
+  injectContentIntoElements('last-whole-weeks-elapsed', 'textContent', prevFridayWeeksElapsed);
+  injectContentIntoElements('next-whole-weeks-elapsed', 'textContent', nextFridayWeeksElapsed);
 }
+
+// function addDays(date, days) {
+//   const result = new Date(date);
+//   result.setDate(result.getDate() + days);
+//   return result;
+// }
 
 function render() {
   const deathDate = new Date(lastKnownAliveTime);
@@ -122,33 +119,29 @@ function render() {
   //console.log(`daysAndWeeksLifetime between ${birthTime} and ${lastKnownAliveTime}: `, daysAndWeeksLifetime);
   //console.log(`todayIndex: ${todayIndex}, deathDayIndex: ${deathDayIndex}, deathDate: ${deathDate}`);
 
+
+  // regardless of whether today is the same day of the week as the targetDay, we always populate the common elements
+  populateCommonElements(daysAndWeeksLifetime, now);
+
+  // then we populate the elements that are unique to each layout
+  populateWholeWeekDayElements(daysSinceDeath);
+  populatePartialWeekDayElements(daysSinceDeath, todayIndex, deathDayIndex);
+
+  // finally, we toggle the visibility of the two main layout elements based on whether today matches death day
   if (todayIndex === deathDayIndex) {
-    renderWholeWeekDay(daysSinceDeath, daysAndWeeksLifetime, now);
     toggleLayout('whole');
   } else {
-    renderPartialWeekDays(daysSinceDeath, daysAndWeeksLifetime, now, todayIndex, deathDayIndex);
     toggleLayout('partial');
   }
-
 }
 
-
-function injectPlainTextIntoElements(identifier, value) {
+// DOM manipulation helper function to inject content into elements with a specific data-id
+function injectContentIntoElements(identifier, prop, value) {
   const elements = document.querySelectorAll(`[data-id="${identifier}"]`);
-  // console.log(elements);
   elements?.forEach(element => {
-    element.textContent = value;
+    element[prop] = value;
   });
 };
-
-function injectHTMLIntoElements(identifier, value) {
-  const elements = document.querySelectorAll(`[data-id="${identifier}"]`);
-  // console.log(elements);
-  elements?.forEach(element => {
-    element.innerHTML = value;
-  });
-}
-
 
 window.addEventListener('load', () => {
   render();
