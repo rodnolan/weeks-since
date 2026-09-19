@@ -143,6 +143,18 @@ function injectContentIntoElements(identifier, prop, value) {
   });
 };
 
-window.addEventListener('load', () => {
+window.addEventListener('DOMContentLoaded', () => {
+  render();
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    console.log("iOS PWA resumed from background. Re-rendering.");
+    render();
+  }
+});
+
+// Fallback listener for app container frame refocus adjustments
+window.addEventListener('focus', () => {
   render();
 });
