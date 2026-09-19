@@ -3,4 +3,5 @@
 - ~~split styles and scripts into separate files~~
 - ~~move javascript from `result.innerHtml=` to populating each pre-defined element~~
 - ~~fix the typography styles so that the header and footer are completely visible~~
-- update the heading and make sure it displays properly in each orientation
+- ~~update the heading and make sure it displays properly in each orientation~~
+- fix the precommit hook so that it doesn't update the major number when it should update the patch number
