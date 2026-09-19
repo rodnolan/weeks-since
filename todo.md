@@ -5,3 +5,4 @@
 - ~~fix the typography styles so that the header and footer are completely visible~~
 - ~~update the heading and make sure it displays properly in each orientation~~
 - fix the precommit hook so that it doesn't update the major number when it should update the patch number
+- fix the date wrapping so that the month and day are one the same line always
